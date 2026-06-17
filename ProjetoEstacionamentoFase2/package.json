@@ -1,0 +1,13 @@
+{
+  "name": "projeto-estacionamento-fase2",
+  "version": "2.0.0",
+  "description": "Projeto de estacionamento - Fase 2 com CSV, interface e relatórios gerenciais.",
+  "type": "module",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "demo": "node src/app.js --demo"
+  },
+  "author": "",
+  "license": "ISC"
+}
