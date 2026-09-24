@@ -1,0 +1,17 @@
+{
+  "name": "sistema-de-estacionamento",
+  "version": "3.0.0",
+  "description": "Sistema Node.js para gestão de estacionamento com regras de negócio, persistência CSV, relatórios e testes automatizados.",
+  "type": "module",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "demo": "node src/app.js --demo",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "author": "Diógenes Moreira Legal",
+  "license": "MIT"
+}
