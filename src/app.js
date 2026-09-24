@@ -21,14 +21,14 @@ persistencia.carregarTudo();
 const relatorios = new RelatoriosGerenciais(cadastro, registro);
 
 if (process.argv.includes('--demo')) {
-  console.log('Demonstração da Fase 2 executada com sucesso.');
-  console.log('\nResumo geral:');
+  console.log('\n🚗 SISTEMA DE ESTACIONAMENTO — DEMONSTRAÇÃO\n');
+  console.log('Resumo operacional:');
   console.table([relatorios.resumo()]);
-  console.log('\nTotal arrecadado por categoria:');
+  console.log('\nArrecadação por categoria:');
   console.table(relatorios.totalArrecadadoPorCategoria());
-  console.log('\nClientes impedidos de entrar:');
+  console.log('\nClientes com restrição de entrada:');
   console.table(relatorios.clientesImpedidosDeEntrar());
-  console.log('\n10 clientes mais frequentes de 2025:');
+  console.log('\nClientes mais frequentes em 2025:');
   console.table(relatorios.dezClientesMaisFrequentesDoAno(2025));
 } else {
   const ui = new InterfaceUsuario(cadastro, registro, relatorios, persistencia);

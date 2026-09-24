@@ -1,127 +1,92 @@
-# Projeto Estacionamento - Fase 2
+# Sistema de Estacionamento
 
-Sistema em JavaScript/Node.js para controle de estacionamento, corrigido a partir da avaliação da Fase 1 e ampliado com persistência CSV, interface com usuário e relatórios gerenciais.
+Sistema de gestão de estacionamento desenvolvido em **JavaScript/Node.js**, com foco em orientação a objetos, regras de negócio, persistência em CSV e relatórios gerenciais.
 
-## Como executar
+O projeto surgiu como atividade acadêmica e está sendo evoluído para uma versão de portfólio, preservando sua proposta original de aplicação de terminal.
 
-O projeto usa apenas recursos nativos do Node.js.
+## Principais recursos
+
+- cadastro de estudantes, professores e empresas
+- veículos avulsos
+- registro de entradas e saídas
+- prevenção de entrada duplicada
+- regras de cobrança específicas por categoria
+- bloqueios e restrições de entrada
+- persistência de clientes e registros em CSV
+- relatórios de arrecadação, frequência e ocupação
+- uso de `Map` e `Set`
+- testes automatizados com o test runner nativo do Node.js
+- integração contínua com GitHub Actions
+
+## Executar
+
+Requer Node.js 20 ou superior.
 
 ```bash
 npm install
 npm start
 ```
 
-Para testar rapidamente sem entrar no menu interativo:
+Para executar uma demonstração sem utilizar o menu interativo:
 
 ```bash
 npm run demo
 ```
 
-## O que foi corrigido em relação à Fase 1
+## Testes
 
-- As regras de cobrança foram movidas para as classes de domínio, aproveitando melhor o polimorfismo.
-- Cada tipo de cliente calcula sua cobrança:
-  - Professor: isento.
-  - Estudante: paga valor fixo por ingresso, com desconto sobre a tarifa normal.
-  - Empresa: acumula débito para pagamento posterior.
-  - Avulso/não cadastrado: paga a tarifa normal.
-- O sistema impede entrada duplicada para a mesma placa.
-- O sistema impede placas bloqueadas e clientes com restrição.
-- Empresas podem ser bloqueadas ao atingir limite de débito.
-- Estudantes sem saldo suficiente são impedidos de entrar.
-- As placas são armazenadas com `Set`, evitando duplicidade.
-- Clientes, placas e registros usam `Map` para associação eficiente.
+```bash
+npm test
+```
 
-## Funcionalidades da Fase 2
+A suíte inicial valida comportamentos do domínio, incluindo normalização de placas, tipos de cliente, prevenção de entradas duplicadas e fechamento de tickets.
 
-### a) Persistência em CSV
-
-- Leitura de `dados/clientes.csv` na inicialização.
-- Leitura de `dados/registros.csv` na inicialização.
-- Manutenção dos dados em memória durante a execução.
-- Salvamento manual e automático após alterações e ao encerrar.
-- Compatibilidade com o formato original da Fase 1 e com o formato ampliado da Fase 2.
-
-### b) Interface com usuário
-
-A classe `InterfaceUsuario` fica separada em `src/interface/InterfaceUsuario.js` e permite:
-
-- Cadastro de clientes.
-- Entrada de veículos.
-- Saída de veículos.
-- Consulta da situação de cliente.
-- Geração de relatórios.
-- Salvamento dos dados em CSV.
-
-### c) Relatórios gerenciais implementados
-
-- Valor total arrecadado por período e/ou categoria de cliente.
-- Situação de um cliente cadastrado.
-- Registros de estacionamento de cliente cadastrado por período.
-- Registros de estacionamento de cliente não cadastrado por período.
-- Relação de clientes impedidos de entrar no estacionamento.
-- Relação dos 10 clientes mais frequentes do ano.
-- Relatórios extras: veículos no pátio, histórico de saídas, total de débitos empresariais e quantidade por tipo de cliente.
-
-### d) Estruturas de dados usadas
-
-- `Set`: placas de cada cliente e placas bloqueadas.
-- `Map`: cadastro de clientes por documento, índice de placas por cliente e tickets por placa.
-
-## Estrutura
+## Arquitetura
 
 ```text
 src/
-  app.js
-  modelos/
-    Cliente.js
-    Estudante.js
-    Professor.js
-    Empresa.js
-    TicketEstacionamento.js
-    Avulso.js
-  servicos/
-    CadastroClientes.js
-    RegistroDeEntradas_E_Saidas.js
-    RelatoriosGerenciais.js
-    PersistenciaCSV.js
-  interface/
-    InterfaceUsuario.js
+├── app.js
+├── interface/
+│   └── InterfaceUsuario.js
+├── modelos/
+│   ├── Cliente.js
+│   ├── Estudante.js
+│   ├── Professor.js
+│   ├── Empresa.js
+│   ├── Avulso.js
+│   └── TicketEstacionamento.js
+└── servicos/
+    ├── CadastroClientes.js
+    ├── RegistroDeEntradas_E_Saidas.js
+    ├── RelatoriosGerenciais.js
+    └── PersistenciaCSV.js
+
 dados/
-  clientes.csv
-  registros.csv
-DiagramaDeClasses.png
+tests/
+.github/workflows/
 ```
 
-## Formato do arquivo `dados/clientes.csv`
+### Camadas
 
-Formatos aceitos:
+**Modelos** concentram as entidades e regras de domínio. **Serviços** coordenam cadastro, movimentações, persistência e relatórios. **InterfaceUsuario** mantém a interação de terminal separada das regras de negócio.
 
-```text
-cpf,nome,saldo,Estudante,placa1,placa2
-cpf,nome,Professor,placa1,placa2
-cnpj,nome,debito,Empresa,placa1,placa2
-```
+## Regras de negócio
 
-Exemplos:
+- Professor: categoria com regra própria de cobrança.
+- Estudante: cobrança diferenciada e controle de saldo.
+- Empresa: acumula débito conforme as regras do domínio.
+- Avulso: utiliza a tarifa padrão.
+- Uma placa não pode possuir duas entradas abertas simultaneamente.
+- Clientes ou placas com restrição podem ser impedidos de entrar.
 
-```text
-12345678901,João Silva,100,Estudante,ABC1D23
-34567890123,Carlos Oliveira,Professor,JKL4G56,GHI3F45
-56789012345,Tecnopuc S.A.,30,Empresa,STU7J89,VWX8K90,YZA9L01
-```
+## Persistência
 
-## Formato do arquivo `dados/registros.csv`
+Os dados permanecem em arquivos CSV para preservar a proposta acadêmica e tornar o projeto simples de executar sem banco de dados externo.
 
-Formato ampliado da Fase 2:
+## Contexto acadêmico
 
-```text
-placa,documentoCliente,tipoCliente,dataHoraEntrada,dataHoraSaida,valorCobrado,valorDesconto,valorPago,observacao
-```
+A versão original foi desenvolvida em fases. A evolução para portfólio reorganiza o repositório, adiciona testes e automação, mas mantém as regras de negócio e a aplicação Node.js como núcleo do projeto.
 
-Registros abertos deixam os campos de saída e valores vazios.
+## Autor
 
-## Observação
-
-O arquivo `registros.csv` antigo da Fase 1 também é aceito. Ao salvar novamente, o sistema grava no formato ampliado da Fase 2.
-
+Diógenes Moreira Legal
